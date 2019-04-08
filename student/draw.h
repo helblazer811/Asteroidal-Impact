@@ -17,12 +17,6 @@ void drawAppState(AppState *state);
 
 // If you have anything else you need accessible from outside the graphics.c
 // file, you can add them here. You likely won't.
-void drawPlayerShip(PlayerShip* ship);
-void drawEnemyShip(EnemyShip* ship);
-void drawRandomAsteroid(int r, int c);
-void drawAsteroid(Asteroid* asteroid);
-void drawEnemyProjectile(EnemyProjectile* projectile);
-void drawFriendlyProjectile(FriendlyProjectile* projectile);
 
 
 #endif

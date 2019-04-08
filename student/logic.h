@@ -23,6 +23,7 @@ typedef struct {
     Point* size;
     u16* image;
     int lives;
+    int shotCooldown;
 } PlayerShip; 
 
 typedef struct {
@@ -66,13 +67,13 @@ typedef struct {
     int counter;
     PlayerShip* ship;//single object
     int numAsteroids;
-    Asteroid* asteroids;//array
+    Asteroid** asteroids;//array
     int numEnemyShips;
-    EnemyShip * enemyShips;//array
+    EnemyShip** enemyShips;//array
     int numFriendlyProjectiles;
-    FriendlyProjectile* friendlyProjectiles;//array
+    FriendlyProjectile** friendlyProjectiles;//array
     int numEnemyProjectiles;
-    EnemyProjectile *enemyProjectiles;//array
+    EnemyProjectile** enemyProjectiles;//array
 
 } AppState;
 
@@ -105,6 +106,13 @@ EnemyProjectile* EnemyProjectileNew(int r, int c, int vr, int vc);
 
 void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow);
 void setPlayerPosition(PlayerShip* ship);
+
+void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles, int numFriendlyProjectiles);
+void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow);
+
+void freePoint(Point* point);
+void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile);
+
 
 #define VELOCITY 1
 

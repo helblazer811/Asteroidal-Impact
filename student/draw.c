@@ -45,25 +45,29 @@ static void drawEnemyShip(EnemyShip* ship);
 void fullDrawAppState(AppState *state) {
     // TA-TODO: IMPLEMENT.
     //draw player ship
-    UNUSED(drawLives);
-    UNUSED(drawPlayerShip);
-    UNUSED(drawFriendlyProjectile);
     UNUSED(drawEnemyProjectile);
     UNUSED(drawAsteroid);
     UNUSED(drawRandomAsteroid);
     UNUSED(drawEnemyShip);
 
-
     drawPlayerShip(state->ship);
+
+    for (int i = 0; i < state->numFriendlyProjectiles; i++) {
+    	drawFriendlyProjectile(state->friendlyProjectiles[i]);
+    }
+
     drawLives(state->ship);
 
+    /*
     char buffer[50]; 
 
     // Counting the character and storing  
     // in buffer using snprintf 
-    int j = snprintf(buffer, 40, "%d\n", state->ship->velocity->c/60); 
+    int j = snprintf(buffer, 40, "%d", state->numFriendlyProjectiles); 
     UNUSED(j);
     drawString(100,100,buffer,WHITE);
+	*/
+	
     UNUSED(state);
 }
 
@@ -109,7 +113,6 @@ static void drawEnemyProjectile(EnemyProjectile* projectile) {
 }
 
 static void drawAsteroid(Asteroid* asteroid) {
-
 	drawImageDMA(asteroid->location->c,
 				 asteroid->location->r,
 				 asteroid->size->c,

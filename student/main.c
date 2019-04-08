@@ -78,8 +78,8 @@ int main(void) {
                 }
                 // Process the app for one frame, store the next state
                 nextAppState = processAppState(&currentAppState, previousButtons, currentButtons);
-                nextAppState.counter = (nextAppState.counter + 1);
-              
+                nextAppState.counter = (nextAppState.counter + 1) % 600;
+
                 // Wait for VBlank before we do any drawing.
                 waitForVBlank();
 

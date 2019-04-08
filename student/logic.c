@@ -1,6 +1,7 @@
 #include "logic.h"
 #include "gba.h"
 #include "images/galaga_ship_sprite.h"
+#include "images/friendly_laser.h"
 #include <stdlib.h>
 
 void initializeAppState(AppState* appState) {
@@ -11,13 +12,13 @@ void initializeAppState(AppState* appState) {
     appState->score = 0;
     appState->ship = PlayerShipNew(HEIGHT - GALAGA_SHIP_SPRITE_HEIGHT*2, WIDTH/2 - GALAGA_SHIP_SPRITE_WIDTH/2, 0, 0, 3);
     appState->numAsteroids = 0;
-    appState->asteroids = malloc(20 * sizeof(Asteroid));
+    appState->asteroids = malloc(20 * sizeof(Asteroid*));
     appState->numEnemyShips = 0;
-    appState->enemyShips = malloc(20 * sizeof(EnemyShip));
+    appState->enemyShips = malloc(20 * sizeof(EnemyShip*));
     appState->numFriendlyProjectiles = 0;
-    appState->friendlyProjectiles = malloc(20 * sizeof(FriendlyProjectile));
+    appState->friendlyProjectiles = malloc(5 * sizeof(FriendlyProjectile*));
     appState->numEnemyProjectiles = 0;
-    appState->enemyProjectiles = malloc(20 * sizeof(EnemyProjectile));
+    appState->enemyProjectiles = malloc(20 * sizeof(EnemyProjectile*));
     appState->counter = 0;
 }
 
@@ -37,6 +38,7 @@ PlayerShip* PlayerShipNew(int r, int c, int vr, int vc, int lives){
     ret->location = PointNew(r, c);
     ret->velocity = PointNew(vr, vc);
     ret->lives = lives;
+    ret->shotCooldown = 60;
 
     return ret;
 }
@@ -54,7 +56,6 @@ Asteroid* AsteroidNew(int r, int c, int vr, int vc, u16* image, int width, int h
 }
 
 EnemyShip* EnemyShipNew(int r, int c, int vr, int vc,  int lives){
-
     EnemyShip* ret = malloc(sizeof(EnemyShip));
 
     ret->location = PointNew(r, c);
@@ -65,7 +66,6 @@ EnemyShip* EnemyShipNew(int r, int c, int vr, int vc,  int lives){
 }
 
 FriendlyProjectile* FriendlyProjectileNew(int r, int c, int vr, int vc){
-
     FriendlyProjectile* ret = malloc(sizeof(FriendlyProjectile));
 
     ret->location = PointNew(r, c);
@@ -81,6 +81,16 @@ EnemyProjectile* EnemyProjectileNew(int r, int c, int vr, int vc){
     ret->velocity = PointNew(vr, vc);
 
     return ret;
+}
+
+void freePoint(Point* point) {
+    free(point);
+}
+
+void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile) {
+    free(friendlyProjectile->location);
+    free(friendlyProjectile->velocity);
+    free(friendlyProjectile);
 }
 
 
@@ -112,7 +122,6 @@ void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
         && KEY_DOWN(BUTTON_DOWN,keysPressedNow)) {
         ship->velocity->r = 0;
     }
-    
 
     //location constraints
 
@@ -121,6 +130,29 @@ void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
 void setPlayerPosition(PlayerShip* ship) {
     ship->location->r += ship->velocity->r;
     ship->location->c += ship->velocity->c;
+}
+
+void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow) {
+    if (KEY_DOWN(BUTTON_A, keysPressedNow) && currentAppState->ship->shotCooldown == 0) {
+        currentAppState->numFriendlyProjectiles = (currentAppState->numFriendlyProjectiles + 1) % 5;
+        currentAppState->ship->shotCooldown = 30;
+        if (currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles] != NULL) {
+            freeFriendlyProjectile(currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles]);
+        }
+        currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles % 5] = 
+            FriendlyProjectileNew(currentAppState->ship->location->r - FRIENDLY_LASER_HEIGHT,
+                                  currentAppState->ship->location->c + GALAGA_SHIP_SPRITE_WIDTH / 2 - FRIENDLY_LASER_WIDTH/2,
+                                  -2,
+                                   0);
+        
+    }
+}
+
+void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles, int numFriendlyProjectiles) {
+    for (int i = 0; i< numFriendlyProjectiles; i++) {
+        friendlyProjectiles[i]->location->r += friendlyProjectiles[i]->velocity->r;
+        friendlyProjectiles[i]->location->c += friendlyProjectiles[i]->velocity->c;
+    }
 }
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
@@ -159,9 +191,18 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
 
     AppState nextAppState = *currentAppState;
 
-
+    //player movement
     setPlayerVelocities(nextAppState.ship, keysPressedNow);
     setPlayerPosition(nextAppState.ship);
+
+    //projectile generation/removal
+    addFriendlyProjectile(&nextAppState, keysPressedNow);
+    //projectile movement. this handles out of bounds as well
+    setFriendlyProjectilePositions(nextAppState.friendlyProjectiles, nextAppState.numFriendlyProjectiles);
+    //set player shot countdown
+    nextAppState.ship->shotCooldown -= 1;
+    if (nextAppState.ship->shotCooldown < 0) 
+        nextAppState.ship->shotCooldown = 0;
 
     //every 5 seconds randomly generate an asteroid
     //with a certain velocity

@@ -19,9 +19,9 @@ Starting Mednafen 0.9.38.7
    Loading override settings from "/home/alec/.mednafen/pgconfig/AsteroidalImpact.gba.cfg"...
     Failed: Error opening file "/home/alec/.mednafen/pgconfig/AsteroidalImpact.gba.cfg": No such file or directory
 
-   ROM:       182KiB
-   ROM CRC32: 0xb6efa87c
-   ROM MD5:   0x42f4b01d503458b997bda9e9e1548b43
+   ROM:       213KiB
+   ROM CRC32: 0xdca98cbd
+   ROM MD5:   0xdee8fe251b9c448d72aacc6ccc99ba42
 
   Loading custom palette from "/home/alec/.mednafen/palettes/gba.pal"...
    Error: Error opening file "/home/alec/.mednafen/palettes/gba.pal": No such file or directory

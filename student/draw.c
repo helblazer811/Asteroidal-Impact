@@ -52,22 +52,23 @@ void fullDrawAppState(AppState *state) {
 
     drawPlayerShip(state->ship);
 
-    for (int i = 0; i < state->numFriendlyProjectiles; i++) {
-    	drawFriendlyProjectile(state->friendlyProjectiles[i]);
+    for (int i = 0; i < 5; i++) {
+    	if (state->friendlyProjectiles[i] != NULL)
+    		drawFriendlyProjectile(state->friendlyProjectiles[i]);
     }
 
     drawLives(state->ship);
 
-    /*
+    
     char buffer[50]; 
 
     // Counting the character and storing  
     // in buffer using snprintf 
-    int j = snprintf(buffer, 40, "%d", state->numFriendlyProjectiles); 
+    int j = snprintf(buffer, 40, "%d", state->friendlyProjectilesIndex); 
     UNUSED(j);
     drawString(100,100,buffer,WHITE);
-	*/
 	
+
     UNUSED(state);
 }
 

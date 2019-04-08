@@ -15,9 +15,8 @@ void initializeAppState(AppState* appState) {
     appState->asteroids = malloc(20 * sizeof(Asteroid*));
     appState->numEnemyShips = 0;
     appState->enemyShips = malloc(20 * sizeof(EnemyShip*));
-    appState->numFriendlyProjectiles = 0;
     appState->friendlyProjectiles = malloc(5 * sizeof(FriendlyProjectile*));
-    appState->numEnemyProjectiles = 0;
+    appState->friendlyProjectilesIndex = 0;
     appState->enemyProjectiles = malloc(20 * sizeof(EnemyProjectile*));
     appState->counter = 0;
 }
@@ -88,8 +87,8 @@ void freePoint(Point* point) {
 }
 
 void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile) {
-    free(friendlyProjectile->location);
-    free(friendlyProjectile->velocity);
+    freePoint(friendlyProjectile->location);
+    freePoint(friendlyProjectile->velocity);
     free(friendlyProjectile);
 }
 
@@ -134,26 +133,38 @@ void setPlayerPosition(PlayerShip* ship) {
 
 void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow) {
     if (KEY_DOWN(BUTTON_A, keysPressedNow) && currentAppState->ship->shotCooldown == 0) {
-        currentAppState->numFriendlyProjectiles = (currentAppState->numFriendlyProjectiles + 1) % 5;
+        int i = currentAppState->friendlyProjectilesIndex;
         currentAppState->ship->shotCooldown = 30;
-        if (currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles] != NULL) {
-            freeFriendlyProjectile(currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles]);
+        if (currentAppState->friendlyProjectiles[i] != NULL) {
+            freeFriendlyProjectile(currentAppState->friendlyProjectiles[i]);
         }
-        currentAppState->friendlyProjectiles[currentAppState->numFriendlyProjectiles % 5] = 
+        currentAppState->friendlyProjectiles[i] = 
             FriendlyProjectileNew(currentAppState->ship->location->r - FRIENDLY_LASER_HEIGHT,
                                   currentAppState->ship->location->c + GALAGA_SHIP_SPRITE_WIDTH / 2 - FRIENDLY_LASER_WIDTH/2,
                                   -2,
                                    0);
+        currentAppState->friendlyProjectilesIndex = (i + 1) % 5;
         
     }
 }
 
-void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles, int numFriendlyProjectiles) {
-    for (int i = 0; i< numFriendlyProjectiles; i++) {
-        friendlyProjectiles[i]->location->r += friendlyProjectiles[i]->velocity->r;
-        friendlyProjectiles[i]->location->c += friendlyProjectiles[i]->velocity->c;
+void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles) {
+    for (int i = 0; i < 5; i++) {
+        if (friendlyProjectiles[i] != NULL) {
+            friendlyProjectiles[i]->location->r += friendlyProjectiles[i]->velocity->r;
+            friendlyProjectiles[i]->location->c += friendlyProjectiles[i]->velocity->c;
+        }
     }
 }
+
+int isOutOfBounds(Point* location) {
+    return (location->r < HEIGHT) &&
+            (location->r > 0) &&
+            (location->c > 0) &&
+            (location->c < WIDTH);
+}
+
+
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
 // For example, for a snake game, you could have a processSnake function
@@ -198,7 +209,7 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     //projectile generation/removal
     addFriendlyProjectile(&nextAppState, keysPressedNow);
     //projectile movement. this handles out of bounds as well
-    setFriendlyProjectilePositions(nextAppState.friendlyProjectiles, nextAppState.numFriendlyProjectiles);
+    setFriendlyProjectilePositions(nextAppState.friendlyProjectiles);
     //set player shot countdown
     nextAppState.ship->shotCooldown -= 1;
     if (nextAppState.ship->shotCooldown < 0) 

@@ -70,7 +70,7 @@ typedef struct {
     Asteroid** asteroids;//array
     int numEnemyShips;
     EnemyShip** enemyShips;//array
-    int numFriendlyProjectiles;
+    int friendlyProjectilesIndex;
     FriendlyProjectile** friendlyProjectiles;//array
     int numEnemyProjectiles;
     EnemyProjectile** enemyProjectiles;//array
@@ -107,11 +107,13 @@ EnemyProjectile* EnemyProjectileNew(int r, int c, int vr, int vc);
 void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow);
 void setPlayerPosition(PlayerShip* ship);
 
-void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles, int numFriendlyProjectiles);
+void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles);
 void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow);
 
 void freePoint(Point* point);
 void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile);
+
+void removeFriendlyProjectile(AppState* appState);
 
 
 #define VELOCITY 1

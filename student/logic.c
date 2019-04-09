@@ -116,6 +116,11 @@ void freeAsteroid(Asteroid* asteroid) {
     freePoint(asteroid->size);
 }
 
+void freeEnemyProjectile(EnemyProjectile* enemyProjectile) {
+    freePoint(enemyProjectile->location);
+    freePoint(enemyProjectile->velocity);
+    free(enemyProjectile);
+}
 
 void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
     //process the buttons
@@ -222,6 +227,7 @@ const int asteroidSizesWidth []= {
     FUNK_3_WIDTH,
     FUNK_4_WIDTH
 };
+
 const int asteroidSizesHeight[] = {
     ASTEROID_0_HEIGHT,
     ASTEROID_1_HEIGHT,
@@ -294,6 +300,57 @@ void setEnemyPosition(EnemyShip* ship) {
     ship->location->c += ship->velocity->c;
 }
 
+void addEnemyProjectile(AppState* currentAppState) {
+    //every 2 seconds shoot
+    if (currentAppState->counter % 120 == 0){
+        //every 2 seconds
+        int i = currentAppState->enemyProjectilesIndex;
+        if (currentAppState->enemyProjectiles[i] != NULL){
+            freeEnemyProjectile(currentAppState->enemyProjectiles[i]);
+        }
+        currentAppState->enemyProjectiles[i] = 
+            EnemyProjectileNew(currentAppState->enemyShip->location->r + GALAGA_ENEMY_HEIGHT,
+                                  currentAppState->enemyShip->location->c + GALAGA_ENEMY_WIDTH / 2 - ENEMY_LASER_WIDTH/2,
+                                  +2,
+                                   0);
+        currentAppState->enemyProjectilesIndex = (i + 1) % 5;
+        
+    }
+}
+
+void setEnemyProjectilePositions(EnemyProjectile** enemyProjectiles) {
+    for (int i = 0; i < 5; i++) {
+        if (enemyProjectiles[i] != NULL) {
+            if (enemyProjectiles[i]->location->r < HEIGHT)
+                enemyProjectiles[i]->location->r += enemyProjectiles[i]->velocity->r;
+            enemyProjectiles[i]->location->c += enemyProjectiles[i]->velocity->c;
+
+        }
+    }
+}
+
+void removeOutOfBoundsEnemyProjectiles(EnemyProjectile** enemyProjectiles) {
+    for (int i = 0; i < 5; i++) {
+        if (enemyProjectiles[i] != NULL) {
+            if (enemyProjectiles[i]->location->r > HEIGHT ) {
+                freeEnemyProjectile(enemyProjectiles[i]);
+            }
+        }
+    }
+}
+
+void handleFriendlyCollision(AppState* state) {
+    UNUSED(state);
+}
+
+void handleEnemyCollision(AppState* state) {
+    UNUSED(state);
+}
+
+void handleCollision(AppState* state) {
+    handleFriendlyCollision(state);
+    handleEnemyCollision(state);
+}
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
 // For example, for a snake game, you could have a processSnake function
@@ -311,7 +368,7 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
      *
      * To check for key presses, use the KEY_JUST_PRESSED macro for cases where
      * you want to detect each key press once, or the KEY_DOWN macro for checking
-     * if a button is still down.
+     * if a button is still down. 
      *
      * To count time, suppose that the GameBoy runs at a fixed FPS (60fps) and
      * that VBlank is processed once per frame. Use the vBlankCounter variable
@@ -343,6 +400,11 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     nextAppState.ship->shotCooldown -= 1;
     if (nextAppState.ship->shotCooldown < 0) 
         nextAppState.ship->shotCooldown = 0;
+
+    addEnemyProjectile(&nextAppState);
+    setEnemyProjectilePositions(nextAppState.enemyProjectiles);
+    UNUSED(removeOutOfBoundsEnemyProjectiles);
+    //removeOutOfBoundsEnemyProjectiles(nextAppState.enemyProjectiles);
 
     //every 5 seconds randomly generate an asteroid
     //with a certain velocity

@@ -112,12 +112,20 @@ void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow);
 
 void freePoint(Point* point);
 void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile);
+void freeEnemyProjectile(EnemyProjectile* enemyProjectile);
+void removeOutOfBoundsEnemyProjectiles(EnemyProjectile** enemyProjectiles);
 
 void removeFriendlyProjectile(AppState* appState);
 void addRandomAsteroid(AppState* appState);
 
 void setEnemyVelocities(AppState* appState);
 void setEnemyPosition(EnemyShip* ship);
+void addEnemyProjectile(AppState* state);
+void handleFriendlyCollision(AppState* state);
+void handleEnemyCollision(AppState* state);
+void handleCollision(AppState* state);
+
+
 
 #define VELOCITY 1
 

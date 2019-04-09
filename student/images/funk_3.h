@@ -13,7 +13,7 @@
 #ifndef FUNK_3_H
 #define FUNK_3_H
 
-extern const unsigned short funk_3[210];
+extern unsigned short funk_3[210];
 #define FUNK_3_SIZE 420
 #define FUNK_3_LENGTH 210
 #define FUNK_3_WIDTH 14

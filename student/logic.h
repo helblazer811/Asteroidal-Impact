@@ -66,13 +66,13 @@ typedef struct {
     int score;
     int counter;
     PlayerShip* ship;//single object
-    int numAsteroids;
+    int asteroidIndex;
     Asteroid** asteroids;//array
-    int numEnemyShips;
-    EnemyShip** enemyShips;//array
+    int shipIndex;
+    EnemyShip* enemyShip;//array
     int friendlyProjectilesIndex;
     FriendlyProjectile** friendlyProjectiles;//array
-    int numEnemyProjectiles;
+    int enemyProjectilesIndex;
     EnemyProjectile** enemyProjectiles;//array
 
 } AppState;
@@ -114,7 +114,10 @@ void freePoint(Point* point);
 void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile);
 
 void removeFriendlyProjectile(AppState* appState);
+void addRandomAsteroid(AppState* appState);
 
+void setEnemyVelocities(AppState* appState);
+void setEnemyPosition(EnemyShip* ship);
 
 #define VELOCITY 1
 

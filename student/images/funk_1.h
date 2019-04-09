@@ -13,7 +13,7 @@
 #ifndef FUNK_1_H
 #define FUNK_1_H
 
-extern const unsigned short funk_1[256];
+extern unsigned short funk_1[256];
 #define FUNK_1_SIZE 512
 #define FUNK_1_LENGTH 256
 #define FUNK_1_WIDTH 16

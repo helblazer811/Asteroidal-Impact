@@ -13,7 +13,7 @@
 #ifndef FUNK_4_H
 #define FUNK_4_H
 
-extern const unsigned short funk_4[210];
+extern unsigned short funk_4[210];
 #define FUNK_4_SIZE 420
 #define FUNK_4_LENGTH 210
 #define FUNK_4_WIDTH 14

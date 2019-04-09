@@ -13,7 +13,7 @@
 #ifndef ASTEROID_3_H
 #define ASTEROID_3_H
 
-extern const unsigned short asteroid_3[576];
+extern unsigned short asteroid_3[576];
 #define ASTEROID_3_SIZE 1152
 #define ASTEROID_3_LENGTH 576
 #define ASTEROID_3_WIDTH 24

@@ -13,7 +13,7 @@
 #ifndef ASTEROID_2_H
 #define ASTEROID_2_H
 
-extern const unsigned short asteroid_2[156];
+extern unsigned short asteroid_2[156];
 #define ASTEROID_2_SIZE 312
 #define ASTEROID_2_LENGTH 156
 #define ASTEROID_2_WIDTH 13

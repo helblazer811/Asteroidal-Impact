@@ -3,6 +3,10 @@
 #include "logic.h"
 
 #include "images/galaga_ship_sprite.h"
+#include "images/friendly_laser.h"
+#include <stdlib.h>
+
+#include "images/galaga_ship_sprite.h"
 #include "images/galaga_enemy.h"
 
 #include "images/friendly_laser.h"
@@ -38,8 +42,8 @@ static void drawPlayerShip(PlayerShip* ship);
 static void drawFriendlyProjectile(FriendlyProjectile* projectile);
 static void drawEnemyProjectile(EnemyProjectile* projectile);
 static void drawAsteroid(Asteroid* asteroid);
-static void drawRandomAsteroid(int r, int c);
 static void drawEnemyShip(EnemyShip* ship);
+static void drawAsteroids(AppState* appState);
 // This function will be used to draw everything about the app
 // including the background and whatnot.
 void fullDrawAppState(AppState *state) {
@@ -47,18 +51,21 @@ void fullDrawAppState(AppState *state) {
     //draw player ship
     UNUSED(drawEnemyProjectile);
     UNUSED(drawAsteroid);
-    UNUSED(drawRandomAsteroid);
     UNUSED(drawEnemyShip);
 
+    drawAsteroids(state);
+
     drawPlayerShip(state->ship);
+
+	drawEnemyShip(state->enemyShip);   
 
     for (int i = 0; i < 5; i++) {
     	if (state->friendlyProjectiles[i] != NULL)
     		drawFriendlyProjectile(state->friendlyProjectiles[i]);
     }
 
-    drawLives(state->ship);
 
+    drawLives(state->ship);
     
     char buffer[50]; 
 
@@ -67,9 +74,7 @@ void fullDrawAppState(AppState *state) {
     int j = snprintf(buffer, 40, "%d", state->friendlyProjectilesIndex); 
     UNUSED(j);
     drawString(100,100,buffer,WHITE);
-	
 
-    UNUSED(state);
 }
 
 // This function will be used to undraw (i.e. erase) things that might
@@ -113,48 +118,21 @@ static void drawEnemyProjectile(EnemyProjectile* projectile) {
 				 enemy_laser);
 }
 
+static void drawAsteroids(AppState* appState) {
+	for (int i = 0; i < 10; i++) {
+		if (appState->asteroids[i] != NULL) {
+			Asteroid* asteroid = appState->asteroids[i];
+			drawAsteroid(asteroid);
+		}
+	}
+}
+
 static void drawAsteroid(Asteroid* asteroid) {
 	drawImageDMA(asteroid->location->c,
 				 asteroid->location->r,
 				 asteroid->size->c,
 				 asteroid->size->r,
 				 asteroid->image);
-}
-
-const u16* asteroidImages []= {asteroid_0,asteroid_1,asteroid_2,asteroid_3,asteroid_4,funk_1,funk_2,funk_3,funk_4};
-const int asteroidSizesWidth []= {
-	ASTEROID_0_WIDTH,
-	ASTEROID_1_WIDTH,
-	ASTEROID_2_WIDTH,
-	ASTEROID_3_WIDTH,
-	ASTEROID_4_WIDTH,
-	FUNK_1_WIDTH,
-	FUNK_2_WIDTH,
-	FUNK_3_WIDTH,
-	FUNK_4_WIDTH
-};
-const int asteroidSizesHeight[] = {
-	ASTEROID_0_HEIGHT,
-	ASTEROID_1_HEIGHT,
-	ASTEROID_2_HEIGHT,
-	ASTEROID_3_HEIGHT,
-	ASTEROID_4_HEIGHT,
-	FUNK_1_HEIGHT,
-	FUNK_2_HEIGHT,
-	FUNK_3_HEIGHT,
-	FUNK_4_HEIGHT
-};
-
-static void drawRandomAsteroid(int r, int c) {
-	int num = 9;
-
-	int random_integer = randint(0,num);
-
-	drawImageDMA(c,
-				 r,
-				 asteroidSizesWidth[random_integer],
-				 asteroidSizesHeight[random_integer],
-				 asteroidImages[random_integer]);
 }
 
 static void drawEnemyShip(EnemyShip* ship) {
@@ -167,7 +145,7 @@ static void drawEnemyShip(EnemyShip* ship) {
 }
 
 static void drawLives(PlayerShip* ship) {
-	int rLoc = 5;
+	int rLoc = HEIGHT - HEART_SPRITE_HEIGHT - 5;
 	int cLoc = WIDTH - HEART_SPRITE_WIDTH - 5;
 	for (int i = 0; i < ship->lives; i++) {
 		drawImageDMA(cLoc, rLoc, HEART_SPRITE_WIDTH, HEART_SPRITE_HEIGHT, heart_sprite);

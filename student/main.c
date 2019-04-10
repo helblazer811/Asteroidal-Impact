@@ -104,6 +104,17 @@ int main(void) {
 
                 // TA-TODO: Draw the exit / gameover screen
                 drawFullScreenImageDMA(game_over);
+
+                //display score at end
+
+                char buffer[50]; 
+
+                // Counting the character and storing  
+                // in buffer using snprintf 
+                int j = snprintf(buffer, 40, "Score : %d", nextAppState.score); 
+                UNUSED(j);
+                drawCenteredString(WIDTH/2,HEIGHT - 50,10, 20, buffer,WHITE);
+
                 state = APP_EXIT_NODRAW;
                 break;
             case APP_EXIT_NODRAW:

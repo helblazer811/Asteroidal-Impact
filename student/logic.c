@@ -31,7 +31,7 @@ void initializeAppState(AppState* appState) {
     appState->ship = PlayerShipNew(HEIGHT - GALAGA_SHIP_SPRITE_HEIGHT*2, WIDTH/2 - GALAGA_SHIP_SPRITE_WIDTH/2, 0, 0, 3);
     appState->asteroidIndex = 0;
     appState->asteroids = malloc(10 * sizeof(Asteroid*));
-    appState->enemyShip = EnemyShipNew(20, 30, 0, 1, 3);
+    appState->enemyShip = EnemyShipNew(20, 30, 0, 1, 1);
     appState->friendlyProjectiles = malloc(5 * sizeof(FriendlyProjectile*));
     appState->friendlyProjectilesIndex = 0;
     appState->enemyProjectilesIndex = 0;
@@ -302,7 +302,7 @@ void setEnemyPosition(EnemyShip* ship) {
 
 void addEnemyProjectile(AppState* currentAppState) {
     //every 2 seconds shoot
-    if (currentAppState->counter % 120 == 0){
+    if (currentAppState->counter % 120 == 0 && currentAppState->enemyShip->lives > 0){
         //every 2 seconds
         int i = currentAppState->enemyProjectilesIndex;
         if (currentAppState->enemyProjectiles[i] != NULL){
@@ -339,17 +339,92 @@ void removeOutOfBoundsEnemyProjectiles(EnemyProjectile** enemyProjectiles) {
     }
 }
 
-void handleFriendlyCollision(AppState* state) {
-    UNUSED(state);
+int overlaps(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2) {
+    if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0) 
+        return 0;
+
+    if (x1 > (x2 + width2) || x2 > (x1 + width1)) 
+        return 0; 
+    
+    if (y1 > (y2 + height2) || y2 > (y1 + height1)) 
+        return 0; 
+    
+    return 1; 
 }
 
-void handleEnemyCollision(AppState* state) {
-    UNUSED(state);
+void handleFriendlyProjectileCollision(AppState* state) {
+    //handles collision with the friendly projectiles
+    for (int i = 0; i < 5; i++) {
+        if (state->friendlyProjectiles[i] != NULL && state->enemyShip->lives > 0) {
+            //test if it overlaps with the player
+            FriendlyProjectile* projectile = state->friendlyProjectiles[i];
+            EnemyShip* ship = state->enemyShip;
+            UNUSED(ship);
+            if (overlaps(projectile->location->c,
+                        projectile->location->r,
+                        FRIENDLY_LASER_WIDTH,
+                        FRIENDLY_LASER_HEIGHT,
+                        ship->location->c,
+                        ship->location->r,
+                        GALAGA_SHIP_SPRITE_WIDTH,
+                        GALAGA_SHIP_SPRITE_HEIGHT)) {
+                //remove the projectile 
+                freeFriendlyProjectile(state->friendlyProjectiles[i]);
+                state->friendlyProjectiles[i] = NULL;
+                //subtract one life from the player
+                state->enemyShip->lives--;
+                if (state->enemyShip->lives == 0) {
+                    //set death counter
+                    state->enemyShip->deathCounter = 80;
+                    //increment score
+                    state->score++;
+                    state->enemyShip->velocity->r = 0;
+                    state->enemyShip->velocity->c = 0;
+                }
+                //do animation later
+            }
+        }
+    }
+}
+
+void handleEnemyProjectileCollision(AppState* state) {
+    //handles collision with the friendly projectiles.
+    for (int i = 0; i < 5; i++) {
+        if (state->friendlyProjectiles[i] != NULL && state->enemyShip->lives > 0) {
+            //test if it overlaps with the player
+            FriendlyProjectile* projectile = state->friendlyProjectiles[i];
+            EnemyShip* ship = state->enemyShip;
+            UNUSED(ship);
+            if (overlaps(projectile->location->c,
+                        projectile->location->r,
+                        FRIENDLY_LASER_WIDTH,
+                        FRIENDLY_LASER_HEIGHT,
+                        ship->location->c,
+                        ship->location->r,
+                        GALAGA_SHIP_SPRITE_WIDTH,
+                        GALAGA_SHIP_SPRITE_HEIGHT)) {
+                //remove the projectile 
+                freeFriendlyProjectile(state->friendlyProjectiles[i]);
+                state->friendlyProjectiles[i] = NULL;
+                //subtract one life from the player
+                state->enemyShip->lives--;
+                if (state->enemyShip->lives == 0) {
+                    //set death counter
+                    state->enemyShip->deathCounter = 80;
+                    //increment score
+                    state->score++;
+                    state->enemyShip->velocity->r = 0;
+                    state->enemyShip->velocity->c = 0;
+                }
+                //do animation later
+            }
+        }
+    }
 }
 
 void handleCollision(AppState* state) {
-    handleFriendlyCollision(state);
-    handleEnemyCollision(state);
+    handleFriendlyProjectileCollision(state);
+    handleEnemyProjectileCollision(state);
 }
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
@@ -413,6 +488,18 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
 
     setEnemyVelocities(&nextAppState);
     setEnemyPosition(nextAppState.enemyShip);
+
+    handleCollision(&nextAppState);
+
+    if (nextAppState.enemyShip->lives == 0) {
+        if (nextAppState.enemyShip->deathCounter == 0){
+            //free the enemy ship
+            //create a new ship
+            nextAppState.enemyShip = EnemyShipNew(20, 30, 0, 1, 1); 
+        } else {
+            nextAppState.enemyShip->deathCounter--;
+        }
+    }
 
     UNUSED(keysPressedBefore);
     UNUSED(keysPressedNow);

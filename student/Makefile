@@ -15,7 +15,7 @@ PROGNAME = AsteroidalImpact
 # that will be compiled into your program. For example
 # if you have main.c and myLib.c then in the following
 # line you would put main.o and myLib.o
-OFILES = gba.o font.o draw.o logic.o main.o images/garbage.o images/heart_sprite.o images/galaga_enemy.o images/enemy_laser.o images/game_over.o images/friendly_laser.o images/galaga_ship_sprite.o images/start_screen.o images/asteroid_0.o images/asteroid_1.o images/asteroid_2.o images/asteroid_3.o images/asteroid_4.o images/funk_1.o images/funk_2.o images/funk_3.o images/funk_4.o
+OFILES = gba.o font.o draw.o logic.o main.o images/red_explosion.o images/blue_explosion.o images/garbage.o images/heart_sprite.o images/galaga_enemy.o images/enemy_laser.o images/game_over.o images/friendly_laser.o images/galaga_ship_sprite.o images/start_screen.o images/asteroid_0.o images/asteroid_1.o images/asteroid_2.o images/asteroid_3.o images/asteroid_4.o images/funk_1.o images/funk_2.o images/funk_3.o images/funk_4.o
 ################################################################################
 # These are various settings used to make the GBA toolchain work
 # DO NOT EDIT BELOW.

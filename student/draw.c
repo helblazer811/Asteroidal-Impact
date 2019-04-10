@@ -22,6 +22,9 @@
 #include "images/funk_3.h"
 #include "images/funk_4.h"
 
+#include "images/blue_explosion.h"
+#include "images/red_explosion.h"
+
 #include "images/heart_sprite.h"
 
 #include <stdio.h>
@@ -44,6 +47,7 @@ static void drawEnemyProjectile(EnemyProjectile* projectile);
 static void drawAsteroid(Asteroid* asteroid);
 static void drawEnemyShip(EnemyShip* ship);
 static void drawAsteroids(AppState* appState);
+static void drawEnemyExplosion(EnemyShip* ship);
 // This function will be used to draw everything about the app
 // including the background and whatnot.
 void fullDrawAppState(AppState *state) {
@@ -54,7 +58,11 @@ void fullDrawAppState(AppState *state) {
 
     drawPlayerShip(state->ship);
 
-	drawEnemyShip(state->enemyShip);   
+    if (state->enemyShip->lives > 0) {
+    	drawEnemyShip(state->enemyShip);  
+    } else {
+    	drawEnemyExplosion(state->enemyShip);
+    }
 
     for (int i = 0; i < 5; i++) {
     	if (state->friendlyProjectiles[i] != NULL)
@@ -72,7 +80,7 @@ void fullDrawAppState(AppState *state) {
 
     // Counting the character and storing  
     // in buffer using snprintf 
-    int j = snprintf(buffer, 40, "%d", state->enemyProjectilesIndex); 
+    int j = snprintf(buffer, 40, "%d", state->enemyShip->lives); 
     UNUSED(j);
     drawString(100,100,buffer,WHITE);
 
@@ -92,6 +100,14 @@ void undrawAppState(AppState *state) {
 void drawAppState(AppState *state) {
     // TA-TODO: IMPLEMENT.
     UNUSED(state);
+}
+
+static void drawEnemyExplosion(EnemyShip* ship) {
+	drawImageDMA(ship->location->c,
+				ship->location->r,
+				RED_EXPLOSION_WIDTH,
+				RED_EXPLOSION_HEIGHT,
+				red_explosion);
 }
 
 

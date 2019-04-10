@@ -32,6 +32,7 @@ typedef struct {
     Point* size;
     u16* image;
     int lives;
+    int deathCounter;
 } EnemyShip;
 
 typedef struct {

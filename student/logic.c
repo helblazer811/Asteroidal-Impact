@@ -23,6 +23,10 @@
 #include "images/heart_sprite.h"
 #include "myLib.h"
 
+
+/*
+    Initializes the app state
+*/
 void initializeAppState(AppState* appState) {
     // TA-TODO: Initialize everything that's part of this AppState struct here.
     // Suppose the struct contains random values, make sure everything gets
@@ -41,6 +45,9 @@ void initializeAppState(AppState* appState) {
 }
 
 
+/*
+    Constructor for a point struct
+*/
 Point* PointNew(int r, int c) {
     Point * ret = malloc(sizeof(Point));
 
@@ -49,7 +56,9 @@ Point* PointNew(int r, int c) {
 
     return ret;
 }
-
+/*
+    Constructor for a PlayerShip struct
+*/
 PlayerShip* PlayerShipNew(int r, int c, int vr, int vc, int lives){
     PlayerShip* ret = malloc(sizeof(PlayerShip));
 
@@ -60,7 +69,9 @@ PlayerShip* PlayerShipNew(int r, int c, int vr, int vc, int lives){
 
     return ret;
 }
-
+/*
+    Constructor for an Asteroid struct
+*/
 Asteroid* AsteroidNew(int r, int c, int vr, int vc, u16* image, int width, int height, int lives) {
     Asteroid* ret = malloc(sizeof(Asteroid));
 
@@ -73,6 +84,9 @@ Asteroid* AsteroidNew(int r, int c, int vr, int vc, u16* image, int width, int h
     return ret;
 }
 
+/*
+    Constructor for an EnemyShip
+*/
 EnemyShip* EnemyShipNew(int r, int c, int vr, int vc,  int lives){
     EnemyShip* ret = malloc(sizeof(EnemyShip));
 
@@ -83,6 +97,9 @@ EnemyShip* EnemyShipNew(int r, int c, int vr, int vc,  int lives){
     return ret;
 }
 
+/*
+    Constructor for a FriendlyProjectile
+*/
 FriendlyProjectile* FriendlyProjectileNew(int r, int c, int vr, int vc){
     FriendlyProjectile* ret = malloc(sizeof(FriendlyProjectile));
 
@@ -91,7 +108,9 @@ FriendlyProjectile* FriendlyProjectileNew(int r, int c, int vr, int vc){
 
     return ret;
 }
-
+/*
+    Constructor for an EnemyProjectile
+*/
 EnemyProjectile* EnemyProjectileNew(int r, int c, int vr, int vc){
     EnemyProjectile* ret = malloc(sizeof(EnemyProjectile));
 
@@ -100,29 +119,40 @@ EnemyProjectile* EnemyProjectileNew(int r, int c, int vr, int vc){
 
     return ret;
 }
-
+/*
+    Frees a point struct
+*/
 void freePoint(Point* point) {
     free(point);
 }
-
+/*
+    Frees a FriendlyProjectile struct
+*/
 void freeFriendlyProjectile(FriendlyProjectile* friendlyProjectile) {
     freePoint(friendlyProjectile->location);
     freePoint(friendlyProjectile->velocity);
     free(friendlyProjectile);
 }
-
+/*
+    Frees an Asteroid stuct
+*/
 void freeAsteroid(Asteroid* asteroid) {
     freePoint(asteroid->location);
     freePoint(asteroid->velocity);
     freePoint(asteroid->size);
 }
-
+/*
+    Frees an Enemy Projectile struct
+*/
 void freeEnemyProjectile(EnemyProjectile* enemyProjectile) {
     freePoint(enemyProjectile->location);
     freePoint(enemyProjectile->velocity);
     free(enemyProjectile);
 }
 
+/*
+    Sets the velocity of the player ship
+*/
 void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
     //process the buttons
     //use the arrow keys to set the players velocities
@@ -156,6 +186,9 @@ void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
 
 }
 
+/*
+    Updates the PlayerShip position based on its velocities
+*/
 void setPlayerPosition(PlayerShip* ship) {
     if (ship->location->r + ship->velocity->r >= 0 
         && ship->location->r + ship->velocity->r <= HEIGHT - GALAGA_SHIP_SPRITE_HEIGHT)
@@ -165,6 +198,9 @@ void setPlayerPosition(PlayerShip* ship) {
     ship->location->c += ship->velocity->c;
 }
 
+/*
+    Detects key presses and adds the player's projectiles accordingly
+*/
 void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow) {
     if (KEY_DOWN(BUTTON_A, keysPressedNow) && currentAppState->ship->shotCooldown == 0) {
         int i = currentAppState->friendlyProjectilesIndex;
@@ -181,7 +217,9 @@ void addFriendlyProjectile(AppState* currentAppState, u32 keysPressedNow) {
         
     }
 }
-
+/*
+    Updates the position of the projectiles based on their velocities
+*/
 void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles) {
     for (int i = 0; i < 5; i++) {
         if (friendlyProjectiles[i] != NULL) {
@@ -191,6 +229,9 @@ void setFriendlyProjectilePositions(FriendlyProjectile** friendlyProjectiles) {
     }
 }
 
+/*
+    Updates the asteroid's positions based on their velocities
+*/
 void setAsteroidPositions(Asteroid ** asteroids) {
     for (int i = 0; i < 10; i++) {
         if (asteroids[i] != NULL) {
@@ -199,7 +240,9 @@ void setAsteroidPositions(Asteroid ** asteroids) {
         }
     }
 }
-
+/*
+    Detects if a point is out of bounds of the screen
+*/
 int isOutOfBounds(Point* location) {
     return (location->r < HEIGHT) &&
             (location->r > 0) &&
@@ -243,6 +286,9 @@ const int asteroidSizesHeight[] = {
     FUNK_4_HEIGHT
 };
 
+/*
+    Adds a random asteroid to the app state based on the above arrays 
+*/
 void addRandomAsteroid(AppState* appState) {
     if (appState->counter == 0) {
         //generate random asteroid
@@ -286,7 +332,9 @@ void addRandomAsteroid(AppState* appState) {
     }
 }
 
-
+/*
+    Sets the velocity of the enemy ship
+*/
 void setEnemyVelocities(AppState* appState) {
     //set enemy to move back and forth
     appState->enemyShip->velocity->r = 0;
@@ -297,12 +345,17 @@ void setEnemyVelocities(AppState* appState) {
 
 
 }
-
+/*
+    Updates the position of the enemy ship based on the velocity
+*/
 void setEnemyPosition(EnemyShip* ship) {
     ship->location->r += ship->velocity->r;
     ship->location->c += ship->velocity->c;
 }
 
+/*
+    Handles enemy firing every few seconds.
+*/
 void addEnemyProjectile(AppState* currentAppState) {
     //every 2 seconds shoot
     if (currentAppState->counter % 120 == 0 && currentAppState->enemyShip->lives > 0){
@@ -321,12 +374,18 @@ void addEnemyProjectile(AppState* currentAppState) {
     }
 }
 
+/*
+    Creates an EnemyShip struct with a random velocity and starting column index
+*/
 EnemyShip* createEnemyShip(void) {
     int randC = randint(10, WIDTH - GALAGA_ENEMY_WIDTH - 10);
     int randV = randint(0,1) * 2 - 1;
     return EnemyShipNew(20, randC, 0, randV, 1); 
 }
 
+/*
+    Updates the positions of the enmey projectiles
+*/
 void setEnemyProjectilePositions(EnemyProjectile** enemyProjectiles) {
     for (int i = 0; i < 5; i++) {
         if (enemyProjectiles[i] != NULL) {
@@ -338,6 +397,9 @@ void setEnemyProjectilePositions(EnemyProjectile** enemyProjectiles) {
     }
 }
 
+/*
+    Removes any projectiles that are off of the screen
+*/
 void removeOutOfBoundsEnemyProjectiles(EnemyProjectile** enemyProjectiles) {
     for (int i = 0; i < 5; i++) {
         if (enemyProjectiles[i] != NULL) {
@@ -348,6 +410,9 @@ void removeOutOfBoundsEnemyProjectiles(EnemyProjectile** enemyProjectiles) {
     }
 }
 
+/*
+    Sees if two rectangels defined by the parameters overlap with one another
+*/
 int overlaps(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2) {
     if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0) 
         return 0;
@@ -361,6 +426,9 @@ int overlaps(int x1, int y1, int width1, int height1, int x2, int y2, int width2
     return 1; 
 }
 
+/*
+    Handles the players projectiles hitting the enemy
+*/
 void handleFriendlyProjectileCollision(AppState* state) {
     //handles collision with the friendly projectiles.
     for (int i = 0; i < 5; i++) {
@@ -397,6 +465,9 @@ void handleFriendlyProjectileCollision(AppState* state) {
 
 }
 
+/*
+    Handles the enemy projectiles hitting the player
+*/
 void handleEnemyProjectileCollision(AppState* state) {
     
     //handles collision with the friendly projectiles
@@ -428,6 +499,9 @@ void handleEnemyProjectileCollision(AppState* state) {
     }
 }
 
+/*
+    Handles collison
+*/
 void handleCollision(AppState* state) {
     handleFriendlyProjectileCollision(state);
     handleEnemyProjectileCollision(state);

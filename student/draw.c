@@ -102,6 +102,9 @@ void drawAppState(AppState *state) {
     UNUSED(state);
 }
 
+/*
+	Draws the explosion that occurs when an enemy is killed.
+*/
 static void drawEnemyExplosion(EnemyShip* ship) {
 	drawImageDMA(ship->location->c,
 				ship->location->r,
@@ -110,7 +113,9 @@ static void drawEnemyExplosion(EnemyShip* ship) {
 				red_explosion);
 }
 
-
+/*
+	Draws the player ship
+*/
 static void drawPlayerShip(PlayerShip* ship) {
 	drawImageDMA(ship->location->c,
 				ship->location->r,
@@ -119,6 +124,10 @@ static void drawPlayerShip(PlayerShip* ship) {
 				galaga_ship_sprite);
 }
 
+
+/*
+	Draws the players projectile
+*/
 static void drawFriendlyProjectile(FriendlyProjectile* projectile) {
 	drawImageDMA(projectile->location->c,
 				 projectile->location->r,
@@ -127,6 +136,9 @@ static void drawFriendlyProjectile(FriendlyProjectile* projectile) {
 				 friendly_laser);
 }
 
+/*
+	Draws the enemy's projectile.
+*/
 static void drawEnemyProjectile(EnemyProjectile* projectile) {
 	drawImageDMA(projectile->location->c,
 				 projectile->location->r,
@@ -135,6 +147,9 @@ static void drawEnemyProjectile(EnemyProjectile* projectile) {
 				 enemy_laser);
 }
 
+/*
+	Draws all of the asteroids
+*/
 static void drawAsteroids(AppState* appState) {
 	for (int i = 0; i < 10; i++) {
 		if (appState->asteroids[i] != NULL) {
@@ -144,6 +159,9 @@ static void drawAsteroids(AppState* appState) {
 	}
 }
 
+/*
+	Draws a single asteroid
+*/
 static void drawAsteroid(Asteroid* asteroid) {
 	drawImageDMA(asteroid->location->c,
 				 asteroid->location->r,
@@ -152,6 +170,10 @@ static void drawAsteroid(Asteroid* asteroid) {
 				 asteroid->image);
 }
 
+
+/*
+	Draws the enemy ship
+*/
 static void drawEnemyShip(EnemyShip* ship) {
 
 	drawImageDMA(ship->location->c,
@@ -161,6 +183,11 @@ static void drawEnemyShip(EnemyShip* ship) {
 				galaga_enemy);
 }
 
+
+/*
+	Draws hearts in the bottom right of the screen depending on how
+	many lives the user has
+*/
 static void drawLives(PlayerShip* ship) {
 	int rLoc = HEIGHT - HEART_SPRITE_HEIGHT - 5;
 	int cLoc = WIDTH - HEART_SPRITE_WIDTH - 5;

@@ -31,7 +31,7 @@ void initializeAppState(AppState* appState) {
     appState->ship = PlayerShipNew(HEIGHT - GALAGA_SHIP_SPRITE_HEIGHT*2, WIDTH/2 - GALAGA_SHIP_SPRITE_WIDTH/2, 0, 0, 3);
     appState->asteroidIndex = 0;
     appState->asteroids = malloc(10 * sizeof(Asteroid*));
-    appState->enemyShip = EnemyShipNew(20, 30, 0, 1, 1);
+    appState->enemyShip = createEnemyShip();
     appState->friendlyProjectiles = malloc(5 * sizeof(FriendlyProjectile*));
     appState->friendlyProjectilesIndex = 0;
     appState->enemyProjectilesIndex = 0;
@@ -156,7 +156,11 @@ void setPlayerVelocities(PlayerShip* ship, u32 keysPressedNow) {
 }
 
 void setPlayerPosition(PlayerShip* ship) {
-    ship->location->r += ship->velocity->r;
+    if (ship->location->r + ship->velocity->r >= 0 
+        && ship->location->r + ship->velocity->r <= HEIGHT - GALAGA_SHIP_SPRITE_HEIGHT)
+        ship->location->r += ship->velocity->r;
+    if (ship->location->c + ship->velocity->c >= 0 
+        && ship->location->c + ship->velocity->c <= WIDTH - GALAGA_SHIP_SPRITE_WIDTH)
     ship->location->c += ship->velocity->c;
 }
 
@@ -201,8 +205,6 @@ int isOutOfBounds(Point* location) {
             (location->c > 0) &&
             (location->c < WIDTH);
 }
-
-#define ASTEROID_NUM (9)
 
 u16* asteroidImages []= {
     asteroid_0,
@@ -316,6 +318,12 @@ void addEnemyProjectile(AppState* currentAppState) {
         currentAppState->enemyProjectilesIndex = (i + 1) % 5;
         
     }
+}
+
+EnemyShip* createEnemyShip(void) {
+    int randC = randint(10, WIDTH - GALAGA_ENEMY_WIDTH - 10);
+    int randV = randint(0,1) * 2 - 1;
+    return EnemyShipNew(20, randC, 0, randV, 1); 
 }
 
 void setEnemyProjectilePositions(EnemyProjectile** enemyProjectiles) {
@@ -492,7 +500,7 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
         if (nextAppState.enemyShip->deathCounter == 0){
             //free the enemy ship
             //create a new ship
-            nextAppState.enemyShip = EnemyShipNew(20, 30, 0, 1, 1); 
+            nextAppState.enemyShip = createEnemyShip();
         } else {
             nextAppState.enemyShip->deathCounter--;
         }

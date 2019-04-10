@@ -126,7 +126,9 @@ void handleFriendlyCollision(AppState* state);
 void handleEnemyCollision(AppState* state);
 void handleCollision(AppState* state);
 int overlaps(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
+EnemyShip* createEnemyShip(void);
 
+#define ASTEROID_NUM (9)
 
 
 #define VELOCITY 1

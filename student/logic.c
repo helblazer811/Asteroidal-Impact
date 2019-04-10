@@ -21,6 +21,7 @@
 #include "images/funk_4.h"
 
 #include "images/heart_sprite.h"
+#include "myLib.h"
 
 void initializeAppState(AppState* appState) {
     // TA-TODO: Initialize everything that's part of this AppState struct here.

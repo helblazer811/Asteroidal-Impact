@@ -20,8 +20,8 @@ Starting Mednafen 0.9.38.7
     Failed: Error opening file "/home/alec/.mednafen/pgconfig/AsteroidalImpact.gba.cfg": No such file or directory
 
    ROM:       215KiB
-   ROM CRC32: 0xcec8ebb3
-   ROM MD5:   0x78583ad6c47d3b730fdcd6dd21c4334c
+   ROM CRC32: 0xf8c8a3e3
+   ROM MD5:   0x62aaa54762997b1f300f8bfde76d1837
 
   Loading custom palette from "/home/alec/.mednafen/palettes/gba.pal"...
    Error: Error opening file "/home/alec/.mednafen/palettes/gba.pal": No such file or directory
@@ -54,6 +54,3 @@ Starting Mednafen 0.9.38.7
   Checking maximum texture size...
    Apparently it is at least: 16384 x 16384
   Using GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV for texture source data.
-
-Signal has been caught and dealt with: SIGINT
-How DARE you interrupt me!

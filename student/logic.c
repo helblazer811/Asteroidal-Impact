@@ -353,7 +353,7 @@ int overlaps(int x1, int y1, int width1, int height1, int x2, int y2, int width2
 }
 
 void handleFriendlyProjectileCollision(AppState* state) {
-    //handles collision with the friendly projectiles
+    //handles collision with the friendly projectiles.
     for (int i = 0; i < 5; i++) {
         if (state->friendlyProjectiles[i] != NULL && state->enemyShip->lives > 0) {
             //test if it overlaps with the player
@@ -366,8 +366,8 @@ void handleFriendlyProjectileCollision(AppState* state) {
                         FRIENDLY_LASER_HEIGHT,
                         ship->location->c,
                         ship->location->r,
-                        GALAGA_SHIP_SPRITE_WIDTH,
-                        GALAGA_SHIP_SPRITE_HEIGHT)) {
+                        GALAGA_ENEMY_WIDTH,
+                        GALAGA_ENEMY_HEIGHT)) {
                 //remove the projectile 
                 freeFriendlyProjectile(state->friendlyProjectiles[i]);
                 state->friendlyProjectiles[i] = NULL;
@@ -385,36 +385,33 @@ void handleFriendlyProjectileCollision(AppState* state) {
             }
         }
     }
+
 }
 
 void handleEnemyProjectileCollision(AppState* state) {
-    //handles collision with the friendly projectiles.
+    
+    //handles collision with the friendly projectiles
     for (int i = 0; i < 5; i++) {
-        if (state->friendlyProjectiles[i] != NULL && state->enemyShip->lives > 0) {
+        if (state->enemyProjectiles[i] != NULL) {
             //test if it overlaps with the player
-            FriendlyProjectile* projectile = state->friendlyProjectiles[i];
-            EnemyShip* ship = state->enemyShip;
+            EnemyProjectile* projectile = state->enemyProjectiles[i];
+            PlayerShip* ship = state->ship;
             UNUSED(ship);
             if (overlaps(projectile->location->c,
                         projectile->location->r,
-                        FRIENDLY_LASER_WIDTH,
-                        FRIENDLY_LASER_HEIGHT,
+                        ENEMY_LASER_WIDTH,
+                        ENEMY_LASER_HEIGHT,
                         ship->location->c,
                         ship->location->r,
                         GALAGA_SHIP_SPRITE_WIDTH,
                         GALAGA_SHIP_SPRITE_HEIGHT)) {
                 //remove the projectile 
-                freeFriendlyProjectile(state->friendlyProjectiles[i]);
-                state->friendlyProjectiles[i] = NULL;
+                freeEnemyProjectile(state->enemyProjectiles[i]);
+                state->enemyProjectiles[i] = NULL;
                 //subtract one life from the player
-                state->enemyShip->lives--;
-                if (state->enemyShip->lives == 0) {
-                    //set death counter
-                    state->enemyShip->deathCounter = 80;
-                    //increment score
-                    state->score++;
-                    state->enemyShip->velocity->r = 0;
-                    state->enemyShip->velocity->c = 0;
+                state->ship->lives--;
+                if (state->ship->lives == 0) {
+                    state->gameOver = 1;
                 }
                 //do animation later
             }

@@ -80,9 +80,9 @@ void fullDrawAppState(AppState *state) {
 
     // Counting the character and storing  
     // in buffer using snprintf 
-    int j = snprintf(buffer, 40, "%d", state->score); 
+    int j = snprintf(buffer, 40, "Score : %d", state->score); 
     UNUSED(j);
-    drawString(10,10,buffer,WHITE);
+    drawString(5,HEIGHT - 10,buffer,WHITE);
 
 }
 

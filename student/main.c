@@ -119,7 +119,10 @@ int main(void) {
                 break;
             case APP_EXIT_NODRAW:
                 // TA-TODO: Check for a button press here to go back to the start screen
-
+                if (KEY_DOWN(BUTTON_SELECT,currentButtons)) { //pressed
+                    state = START;
+                    break;
+                }
                 break;
         }
 

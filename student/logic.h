@@ -98,10 +98,6 @@ void initializeAppState(AppState *appState);
 // This function will be used to process app frames.
 AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 keysPressedNow);
 
-#define ASTEROID_NUM (9)
-
-
-#define VELOCITY 1
 
 // If you have anything else you need accessible from outside the logic.c
 // file, you can add them here. You likely won't.

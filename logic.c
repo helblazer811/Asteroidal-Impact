@@ -290,7 +290,7 @@ const int asteroidSizesHeight[] = {
     Adds a random asteroid to the app state based on the above arrays 
 */
 void addRandomAsteroid(AppState* appState) {
-    if (appState->counter == 0) {
+    if (appState->counter%180 == 0) {
         //generate random asteroid
         int asteroid_num = randint(0, ASTEROID_NUM);
         //position starts negative 
